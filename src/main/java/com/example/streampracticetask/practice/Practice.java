@@ -291,19 +291,39 @@ public class Practice {
     //30
     // Display all the employees who are making more than average salary
     public static List<Employee> getAllEmployeesAboveAverage() {
-        return null;
+        long sum = employeeService.readAll().stream()
+                .map(Employee::getSalary)
+                .reduce((s1, s2) -> s1 + s2).get();
+        int numberOfEmployees = employeeService.readAll().size();
+
+        double average = (double) sum / numberOfEmployees;
+
+        return employeeService.readAll().stream()
+                .filter(employee -> employee.getSalary() > average)
+                .collect(Collectors.toList());
     }
 
     //31
     // Display all the employees who are making less than average salary
     public static List<Employee> getAllEmployeesBelowAverage() {
-        return null;
+        long sum = employeeService.readAll().stream()
+                .map(Employee::getSalary)
+                .reduce((s1, s2) -> s1 + s2).get();
+        int numberOfEmployees = employeeService.readAll().size();
+
+        double average = (double) sum / numberOfEmployees;
+
+        return employeeService.readAll().stream()
+                .filter(employee -> employee.getSalary() < average)
+                .collect(Collectors.toList());
+
     }
 
     //32
     // Display all the employees separated based on their department id number
     public static Map<Long, List<Employee>> getAllEmployeesForEachDepartment() {
-        return null;
+        return employeeService.readAll().stream()
+                .collect(Collectors.groupingBy(employee -> employee.getDepartment().getId()));
     }
 
     //33
@@ -315,31 +335,47 @@ public class Practice {
     //34
     // Display the employee whose first name is 'Alyssa' and manager's first name is 'Eleni' and department name is 'Sales'
     public static Employee getEmployeeWhoseFirstNameIsAlyssaAndManagersFirstNameIsEleniAndDepartmentNameIsSales() {
-        return null;
+        List<Employee> alyssa = employeeService.readAll().stream()
+                .filter(e -> e.getFirstName().equals("Alyssa"))
+                .filter(e -> e.getManager().getFirstName().equals("Eleni"))
+                .filter(e -> e.getDepartment().getDepartmentName().equals("Sales")).collect(Collectors.toList());
+
+        return alyssa.get(0);
     }
 
     //35
     // Display all the job histories in ascending order by start date
     public static List<JobHistory> getAllJobHistoriesInAscendingOrder() {
-        return null;
+        return jobHistoryService.readAll().stream()
+                .sorted(Comparator.comparing(JobHistory::getStartDate))
+                .collect(Collectors.toList());
     }
 
     //36
     // Display all the job histories in descending order by start date
     public static List<JobHistory> getAllJobHistoriesInDescendingOrder() {
-        return null;
+        return jobHistoryService.readAll().stream()
+                .sorted(Comparator.comparing(JobHistory::getStartDate).reversed())
+                .collect(Collectors.toList());
     }
 
     //37
     // Display all the job histories where the start date is after 01.01.2005
     public static List<JobHistory> getAllJobHistoriesStartDateAfterFirstDayOfJanuary2005() {
-        return null;
+        return jobHistoryService.readAll().stream()
+                .sorted(Comparator.comparing(JobHistory::getStartDate))
+                .filter(jobHistory -> jobHistory.getStartDate().isAfter(LocalDate.of(2005, 01, 01)) )
+                .collect(Collectors.toList());
     }
 
     //38
     // Display all the job histories where the end date is 31.12.2007 and the job title of job is 'Programmer'
     public static List<JobHistory> getAllJobHistoriesEndDateIsLastDayOfDecember2007AndJobTitleIsProgrammer() {
-        return null;
+        return jobHistoryService.readAll().stream()
+                .sorted(Comparator.comparing(JobHistory::getStartDate))
+                .filter(jobHistory -> jobHistory.getEndDate().isEqual(LocalDate.of(2007, 12, 31)) )
+                .filter(jobHistory -> jobHistory.getJob().getJobTitle().equals("Programmer"))
+                .collect(Collectors.toList());
     }
 
     //39
